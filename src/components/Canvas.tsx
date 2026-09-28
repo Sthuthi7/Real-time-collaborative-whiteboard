@@ -10,6 +10,7 @@ interface CanvasProps {
   activeColor: string;
   strokes: Stroke[];
   onStrokeComplete: (stroke: Stroke) => void;
+  onCursorMove?: (x: number, y: number) => void;
 }
 
 interface DrawState {
@@ -25,7 +26,7 @@ interface TextInput {
   visible: boolean;
 }
 
-export default function Canvas({ activeTool, activeColor, strokes, onStrokeComplete }: CanvasProps) {
+export default function Canvas({ activeTool, activeColor, strokes, onStrokeComplete, onCursorMove }: CanvasProps) {
   const persistentRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -258,6 +259,7 @@ export default function Canvas({ activeTool, activeColor, strokes, onStrokeCompl
       drawState.current.points.push({ x, y });
     }
     drawPreview(x, y);
+    onCursorMove?.(x, y);
   };
 
   const handleMouseUp = (e: React.MouseEvent<HTMLCanvasElement>) => {

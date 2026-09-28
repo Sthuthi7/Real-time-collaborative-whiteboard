@@ -12,6 +12,8 @@ interface ToolbarProps {
   onUndo: () => void;
   onRedo: () => void;
   onClear: () => void;
+  participantCount?: number;
+  roomId?: string;
 }
 
 const TOOLS: { tool: ToolType; label: string; icon: string }[] = [
@@ -40,10 +42,22 @@ export default function Toolbar({
   onUndo,
   onRedo,
   onClear,
+  participantCount,
+  roomId,
 }: ToolbarProps) {
   return (
     <div className="flex flex-col gap-2 p-3 bg-gray-100 border-r border-gray-200 h-full w-16 items-center overflow-y-auto shrink-0">
-      {/* Tool buttons */}
+      {/* Room info */}
+      {roomId && (
+        <div className="w-full text-center" title={`Room: ${roomId}`}>
+          <span className="text-xs text-gray-400 truncate block max-w-full">#{roomId.slice(0, 6)}</span>
+        </div>
+      )}
+      {participantCount !== undefined && (
+        <div className="text-xs text-green-600 font-semibold" title={`${participantCount} online`}>
+          🟢{participantCount}
+        </div>
+      )}
       {TOOLS.map(({ tool, label, icon }) => (
         <button
           key={tool}
