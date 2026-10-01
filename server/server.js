@@ -5,6 +5,7 @@ const {
   removeClient,
   getClients,
   appendStroke,
+  clearBoardState,
   getBoardState,
   broadcastToRoom,
 } = require('./roomManager');
@@ -84,6 +85,12 @@ wss.on('connection', (ws, req) => {
         const stroke = { ...msg.stroke, timestamp: Date.now() };
         appendStroke(roomId, stroke);
         broadcastToRoom(roomId, { type: 'stroke', stroke, senderId: sessionId }, sessionId);
+        break;
+      }
+      case 'clear': {
+        clearBoardState(roomId);
+        // Broadcast to ALL clients including sender so everyone clears
+        broadcastToRoom(roomId, { type: 'clear' });
         break;
       }
       case 'cursor': {

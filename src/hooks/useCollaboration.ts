@@ -18,7 +18,7 @@ export function computeDelay(attempt: number): number {
   return Math.min(1000 * Math.pow(2, attempt), 30000);
 }
 
-export function useCollaboration(roomId: string): CollaborationState {
+export function useCollaboration(roomId: string, onRemoteClear?: () => void): CollaborationState {
   const [remoteStrokes, setRemoteStrokes] = useState<Stroke[]>([]);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [remoteCursors, setRemoteCursors] = useState<Record<string, CursorPosition>>({});
@@ -95,6 +95,12 @@ export function useCollaboration(roomId: string): CollaborationState {
           });
           break;
         }
+        case 'clear': {
+          seenIds.current = new Set();
+          setRemoteStrokes([]);
+          onRemoteClear?.();
+          break;
+        }
       }
     };
 
@@ -150,6 +156,13 @@ export function useCollaboration(roomId: string): CollaborationState {
     }
   }, []);
 
+  const sendClear = useCallback(() => {
+    const ws = wsRef.current;
+    if (ws?.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type: 'clear' }));
+    }
+  }, []);
+
   return {
     remoteStrokes,
     participants,
@@ -158,5 +171,6 @@ export function useCollaboration(roomId: string): CollaborationState {
     connectionStatus,
     sendStroke,
     sendCursor,
+    sendClear,
   };
 }

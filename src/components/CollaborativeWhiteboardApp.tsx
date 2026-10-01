@@ -20,8 +20,8 @@ export default function CollaborativeWhiteboardApp({ roomId }: CollaborativeWhit
   const [selfCursor, setSelfCursor] = useState<{ x: number; y: number } | null>(null);
 
   const { strokes: localStrokes, addStroke, undo, redo, clear, canUndo, canRedo } = useHistory();
-  const { remoteStrokes, participants, remoteCursors, self, connectionStatus, sendStroke, sendCursor } =
-    useCollaboration(roomId);
+  const { remoteStrokes, participants, remoteCursors, self, connectionStatus, sendStroke, sendCursor, sendClear } =
+    useCollaboration(roomId, clear);
 
   useKeyboardShortcuts({ undo, redo });
 
@@ -45,6 +45,11 @@ export default function CollaborativeWhiteboardApp({ roomId }: CollaborativeWhit
     sendStroke(stroke);
   };
 
+  const handleClear = () => {
+    clear();
+    sendClear();
+  };
+
   const handleCursorMove = (x: number, y: number) => {
     setSelfCursor({ x, y });
     sendCursor(x, y);
@@ -63,7 +68,7 @@ export default function CollaborativeWhiteboardApp({ roomId }: CollaborativeWhit
         canRedo={canRedo}
         onUndo={undo}
         onRedo={redo}
-        onClear={clear}
+        onClear={handleClear}
         participantCount={participants.length}
         roomId={roomId}
       />

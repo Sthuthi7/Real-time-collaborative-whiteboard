@@ -37,6 +37,11 @@ function appendStroke(roomId, stroke) {
   room.boardState.push(stroke);
 }
 
+function clearBoardState(roomId) {
+  const room = rooms.get(roomId);
+  if (room) room.boardState = [];
+}
+
 function getBoardState(roomId) {
   const room = rooms.get(roomId);
   if (!room) return [];
@@ -67,6 +72,7 @@ module.exports = {
   removeClient,
   getClients,
   appendStroke,
+  clearBoardState,
   getBoardState,
   broadcastToRoom,
 };

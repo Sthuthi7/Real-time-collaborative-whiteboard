@@ -60,13 +60,18 @@ export interface CursorRemoveMessage {
   sessionId: string;
 }
 
+export interface ClearMessage {
+  type: 'clear';
+}
+
 export type ServerMessage =
   | AckMessage
   | SyncMessage
   | StrokeMessage
   | ParticipantsMessage
   | CursorMessage
-  | CursorRemoveMessage;
+  | CursorRemoveMessage
+  | ClearMessage;
 
 // ── Client → Server messages ─────────────────────────────────────────────
 
@@ -93,4 +98,5 @@ export interface CollaborationState {
   connectionStatus: ConnectionStatus;
   sendStroke: (stroke: Stroke) => void;
   sendCursor: (x: number, y: number) => void;
+  sendClear: () => void;
 }
